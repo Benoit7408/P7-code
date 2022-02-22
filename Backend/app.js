@@ -6,19 +6,14 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 
-const userRoutes = require("./routes/user-route");
+const userRoutes = require("./routes/user-routes");
+const newsRoutes = require("./routes/news-routes");
 
-const mysql = require("mysql");
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "groupomania",
-});
 
-module.exports = connection;
 
 app.use("/api/auth", userRoutes);
+
+app.use("/api/news",newsRoutes)
 
 module.exports = app;
