@@ -1,6 +1,7 @@
 // dépendance pour la creation de notre server
 
 const http = require('http');
+require('dotenv').config();
 
 const app = require('./app');
 

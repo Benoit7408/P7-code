@@ -1,83 +1,74 @@
 const mysql = require("mysql");
+const connectionDB = require("../config/db");
+const User = require("../model/user-model");
+const util = require("util");
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "groupomania",
+//const nodemailer = require("nodemailer");
+
+connectionDB.getConnection(function (err) {
+  if (err) throw err;
+  console.log("connection a la base");
 });
 
-connection.connect();
-
 const bcrypt = require("bcrypt");
-//const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const query = util.promisify(connectionDB.query).bind(connectionDB);
 //const createError = require("http-errors");
 
-exports.signup = function (req, res) {
-  if (
-    req.body.first_name &&
-    req.body.last_name &&
-    req.body.email &&
-    req.body.password &&
-    req.body.vpassword
-    //faire fonction regex passwordet check identique = 1
-  ) {
-    bcrypt
-      .hash(req.body.password, 10)
-      .then((hash) => {
-        connection.query(
-          `insert into signup (signup_first_name,signup_last_name,signup_email,signup_password,signup_vpassword,signup_quadri) Values ("${req.body.first_name}","${req.body.last_name}","${req.body.email}","${hash}","${req.body.vpassword}",concat (substr("${req.body.first_name}",1,2), substr("${req.body.last_name}",1,2)))`,
-          function (err, result, fields) {
-            if (err) throw err;
-            connection.query(
-              `select signup_quadri from signup where signup_last_name = '${req.body.last_name}'`,
-              function (err, result, fields) {
-                if (err) throw err;
-                console.log(result);
-                return res.status(201).json({
-                  message:
-                    "Utilisateur crée, veuillez conservé l'information suivante : ",
-                  quadri: result,
-                });
-              }
-            );
-          }
-        );
-      })
-      .catch(function (err) {
-        res.status(500).json({ error });
-      });
-  }
-};
-exports.login = function (req, res) {
-  if (req.body.quadri && req.body.password) {
-    connection.query(
-      `select signup_quadri from signup where signup_quadri = '${req.body.quadri}'`,
-      function (err, result, fields) {
-        if (err) throw err;
-        else if (req.body.quadri === result[0].signup_quadri) {
-          connection.query(
-            `select signup_password from signup where signup_quadri = '${req.body.quadri}'`,
-            function (err, result, fields) {
-              if (err) throw err;
+exports.signup = async function (req, res) {
+  const hash = await bcrypt.hash(req.body.password, 10);
+  const quadri = await query(
+    `select concat (substr(?,1,2), substr(?,1,2)) as quadri`,
+    [req.body.first_name, req.body.last_name]
+  );
 
-              bcrypt
-                .compare(req.body.password, result[0].signup_password)
-                .then((CheckPassOk) => {
-                  console.log(result[0].signup_password);
-                  console.log(req.body.password)
-                  console.log(CheckPassOk)
-                  if (CheckPassOk) {
-                    return res.status(200).json("ok" );
-                  }
-                })
-                .catch(function (err) {
-                  res.status(500).json({ error });
-                });
-            }
-          );
-        }
-      }
-    );
-  }
+  const user = new User({
+    quadri: quadri[0].quadri,
+    email: req.body.email,
+    first_name: req.body.first_name,
+    last_name: req.body.last_name,
+    password: hash,
+    bio: "",
+    avatar: "",
+    isAdmin: "",
+    isActive: true,
+  });
+
+  User.create(user, (err, data) => {
+    
+    if (err) {
+      return res.status(400).json({ message: "utilisateur non crée" });
+    }
+    res.send("utilisateur crée");
+  });
 };
+
+exports.login = function (req, res) {
+  User.findOneByQuadri(req.body.quadri, (err, data) => {
+    if (err) {
+      return res.status(400).json({ message: "utilisateur non trouvé" });
+    } else if (data.length == []) {
+      return res.status(404).json({ message: "Aucun compte" });
+    }
+    console.log (data[0].users_password)
+    
+  bcrypt
+    .compare(req.body.password, data[0].users_password)
+    .then((CheckPassOk) => {
+     
+      if (!CheckPassOk) {
+        return res
+          .status(401)
+          .json({ message: "Votre  mot de passe est incorrecte" });
+      }
+
+      res.status(200).json({ message: "utilisateur ok",
+        token: jwt.sign({ userId: req.body.quadri }, process.env.secretkey),
+      });
+    })
+    .catch(function (error) {
+      res.status(500).json({ error });
+    });
+  });
+};
+
