@@ -14,7 +14,21 @@ const User = function (user) {
 };
 
 User.create = function (user, result) {
-  let createUser = `insert into users (users_quadri, users_email, users_first_name, users_last_name, users_password,users_bio,users_avatar,users_isAdmin,users_isActive) values (?,?,?,?,?,?,?,?,?)`;
+  let createUser = `insert into
+  users (
+    users_quadri,
+    users_email,
+    users_first_name,
+    users_last_name,
+    users_password,
+    users_bio,
+    users_avatar,
+    users_isAdmin,
+    users_isActive
+  )
+values
+  (?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
  
   connectionDB.query(createUser, [
     user.users_quadri,

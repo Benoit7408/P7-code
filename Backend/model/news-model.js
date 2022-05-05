@@ -1,14 +1,16 @@
 const connectionDB = require("../config/db");
 
+//------------------ modele de news---------------
 const News = function (news) {
   this.messages_id = news.id;
   this.messages_quadri = news.quadri;
   this.messages_content = news.content;
+  this.messages_imageUrl = news.imageUrl;
   this.messages_likes = news.likes;
   this.messages_dislikes = news.dislikes;
-  this.messages_createdAt = news.createdAt;
-  this.messages_updatedAt = news.updatedAt;
 };
+
+// -------differente methodes pour aller chercher les informations dans la base-----
 
 News.getAllNews = function (result) {
   let allNews = `select * from messages`;
@@ -33,19 +35,9 @@ News.getAllNewsThisUser = function (news, result) {
   });
 };
 
-News.updateOneNews = function (req, result) {
-  let updateOneNews = `select * from messages where messages_id = ? `;
-  connectionDB.query(updateOneNews, [req.params.id], (err, res) => {
-    if (err) {
-      result(err, null);
-    } else {
-      result(null, res);
-    }
-  });
-};
-News.updateOneNewsPart2 = function (req, result) {
-  let updateOneNewsPart2 = `update messages set "ef" where messages_id = ?`;
-  connectionDB.query(updateOneNewsPart2, [req.params.id], (err, res) => {
+News.getOneNewsThisUser = function (req, result) {
+  let OneNewsQuadri = `select * from messages join users where users_quadri=messages_quadri and messages_id= ?`;
+  connectionDB.query(OneNewsQuadri, [req], (err, res) => {
     if (err) {
       result(err, null);
     } else {
@@ -54,9 +46,67 @@ News.updateOneNewsPart2 = function (req, result) {
   });
 };
 
-News.postOneNews = function (req, result) {
-  let postNews = `insert into messages (messages_content) values ?`;
-  connectionDB.query(postNews,[req], (err, res) => {
+
+News.updateOneNews = function (news, result) {
+  let updateOneNews = `update messages set
+    messages_content = ?,messages_imageUrl = ?,messages_updateAt = ?,messages_isActive = ? where messages_id = ? `;
+
+  connectionDB.query(
+    updateOneNews,
+    [
+      news.messages_content,
+      news.messages_imageUrl,
+      news.messages_updateAt,
+      news.messages_isActive,
+      news.messages_id,
+    ],
+    (err, res) => {
+      if (err) {
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+    }
+  );
+};
+
+News.postOneNews = function (news, result) {
+  let postNews = `insert into
+  messages (
+  
+    messages_quadri,
+    messages_content,
+    messages_imageUrl,
+    messages_likes,
+    messages_dislikes
+  )
+  values
+  (?, ?, ?, ?, ?)
+`;
+  connectionDB.query(
+    postNews,
+    [
+      news.messages_quadri,
+      news.messages_content,
+      news.messages_imageUrl,
+      news.messages_likes,
+      news.messages_dislikes,
+    ],
+    (err, res) => {
+      if (err) {
+        result(err, null);
+      } else {
+        result(null, { news });
+      }
+    }
+  );
+};
+
+News.deleteOneNews = function (news, result) {
+  let deleteOneNews = `update messages set
+    messages_isActive = 0 where messages_id = ? `;
+
+  connectionDB.query(deleteOneNews, [news.messages_id], (err, res) => {
     if (err) {
       result(err, null);
     } else {

@@ -5,14 +5,15 @@ const router = express.Router();
 
 const newsCtrl = require("../controllers/news-ctrl");
 const auth = require("../middleware/auth");
+const multer = require("../middleware/multer");
 
 //route suivi de middleware et de controler
 
 router.get("/all", newsCtrl.getAllNews);
 router.get("/user/:quadri", newsCtrl.getAllNewsThisUser);
-router.put("/user/message/:id", newsCtrl.updateOneNews);
-router.post("/post", newsCtrl.postNews);
-router.delete("/user/message/:id", newsCtrl.deleteNews);
+router.put("/user/message/:id" ,multer,newsCtrl.updateOneNews);
+router.post("/post",auth, multer, newsCtrl.postNews);
+router.delete("/user/message/:id", newsCtrl.deleteOneNews);
 
 
 
