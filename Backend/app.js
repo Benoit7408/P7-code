@@ -26,15 +26,20 @@ app.use((req, res, next) => {
 const userRoutes = require("./routes/user-routes");
 const newsRoutes = require("./routes/news-routes");
 const likesRoutes = require("./routes/likes-routes");
+const commentsRoutes = require("./routes/comments-routes");
+const allInfoRoutes = require("./routes/allInfo-routes")
 
 
 app.use("/images/news",express.static(path.join(__dirname,"images/news")))
 
+app.use("/api", allInfoRoutes);
 app.use("/api/auth", userRoutes);
-
+app.use("/api/news",commentsRoutes);
+app.use("/api/news",likesRoutes);
 app.use("/api/news",newsRoutes);
 
-app.use("/api/news",likesRoutes);
+
+
 
 
 

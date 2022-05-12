@@ -26,7 +26,7 @@ News.getAllNews = function (result) {
 
 News.getAllNewsThisUser = function (news, result) {
   let allNewsQuadri = `select * from messages join users where users_quadri=messages_quadri and messages_quadri= ?`;
-  connectionDB.query(allNewsQuadri, [news], (err, res) => {
+  connectionDB.query(allNewsQuadri, news.messages_quadri, (err, res) => {
     if (err) {
       result(err, null);
     } else {

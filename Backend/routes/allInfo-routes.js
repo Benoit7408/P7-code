@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const likeCtrl= require("../controllers/likes-ctrl");
+const allInfoCtrl = require("../controllers/allInfo-ctrl");
 const auth = require("../middleware/auth");
 
 
-router.post("/:id/like",auth,likeCtrl.likeInfo);
+router.get("/news", auth, allInfoCtrl.getAllInfo);
+
 
 module.exports = router;

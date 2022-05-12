@@ -10,7 +10,7 @@ const multer = require("../middleware/multer");
 //route suivi de middleware et de controler
 
 router.get("/all", newsCtrl.getAllNews);
-router.get("/user/:quadri", newsCtrl.getAllNewsThisUser);
+router.get("/user/message/:quadri", newsCtrl.getAllNewsThisUser);
 router.put("/user/message/:id" ,multer,newsCtrl.updateOneNews);
 router.post("/post",auth, multer, newsCtrl.postNews);
 router.delete("/user/message/:id", newsCtrl.deleteOneNews);

@@ -11,7 +11,6 @@ passwordSchema
   .is()
   .max(100) 
   .has()
-  .not()
   .uppercase(0) 
   .has()
   .lowercase(0) 

@@ -106,6 +106,7 @@ exports.postNews = function (req, res) {
     dislikes: "",
   });
   console.log(req.auth);
+  
   News.postOneNews(news, (err, data) => {
     if (err) {
       return res.status(400).json({ message: err.message });
