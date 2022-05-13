@@ -21,7 +21,9 @@ exports.signup = async function (req, res) {
     `select concat (substr(?,1,2), substr(?,1,2)) as quadri`,
     [req.body.first_name, req.body.last_name]
   );
-
+  
+  
+    
   const user = new User({
     quadri: quadri[0].quadri,
     email: req.body.email,

@@ -2,14 +2,14 @@ const connectionDB = require("../config/db");
 
 const User = function (user) {
     
-    this.users_quadri = user.quadri,
-    this.users_email = user.email,
-    this.users_first_name = user.first_name,
-    this.users_last_name = user.last_name,
-    this.users_password = user.password,
-    this.users_bio = user.bio,
-    this.users_avatar = user.avatar,
-    this.users_isAdmin = user.isAdmin,
+    this.users_quadri = user.quadri;
+    this.users_email = user.email;
+    this.users_first_name = user.first_name;
+    this.users_last_name = user.last_name;
+    this.users_password = user.password;
+    this.users_bio = user.bio;
+    this.users_avatar = user.avatar;
+    this.users_isAdmin = user.isAdmin;
     this.users_isActive = user.isActive
 };
 
