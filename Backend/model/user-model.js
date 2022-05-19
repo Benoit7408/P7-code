@@ -68,6 +68,38 @@ User.findOneByQuadri = function (user, result) {
   });
 };
  
+User.userId = function (user, result) {
+    
+  let updateQuadri = `select users_id from users where users_quadri = ?`
+  connectionDB.query(updateQuadri, [
+    user
+  ],(err,res) => {
+    if(err){
+        console.log(err)
+        result(err,null)
+      } else {
+
+          result(null, res )
+      }
+  });
+};
+
+User.updateQuadri = function (data, result) {
+    
+  let updateQuadri = `update users set users_quadri = ? where users_id = ?`
+  connectionDB.query(updateQuadri, data
+  ,(err,res) => {
+    if(err){
+        console.log(err)
+        result(err,null)
+      } else {
+
+          result(null, res )
+      }
+  });
+};
+
+
 
 
 module.exports = User;

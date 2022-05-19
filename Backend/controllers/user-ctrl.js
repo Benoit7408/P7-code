@@ -22,8 +22,6 @@ exports.signup = async function (req, res) {
     [req.body.first_name, req.body.last_name]
   );
   
-  
-    
   const user = new User({
     quadri: quadri[0].quadri,
     email: req.body.email,
@@ -40,8 +38,28 @@ exports.signup = async function (req, res) {
     
     if (err) {
       return res.status(400).json({ message: "utilisateur non crée" });
+    }else{
+      User.userId(user.users_quadri,(err, data) => {
+        console.log(data[0].users_id)
+        if (err) {
+          return res.status(400).json({ message: "utilisateur non trouvé" });
+        }else{
+          console.log(data[0].users_id)
+          console.log(user.users_quadri)
+          User.updateQuadri([
+            user.users_quadri + data[0].users_id.toString(),
+            data[0].users_id
+          ],(err, result)=>{
+            if (err) {
+              return res.status(400).json({ message: err.message });
+            } else {
+              return res.status(200).json({ message: result });
+            }
+          })
+        }
+
+      })
     }
-    res.send("utilisateur crée");
   });
 };
 

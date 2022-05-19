@@ -5,7 +5,7 @@ const allInfoCtrl = require("../controllers/allInfo-ctrl");
 const auth = require("../middleware/auth");
 
 
-router.get("/news", auth, allInfoCtrl.getAllInfo);
+router.get("/news", allInfoCtrl.getAllInfo);
 
 
 module.exports = router;

@@ -31,12 +31,31 @@ exports.likeInfo = (req, res) => {
                 if (err) {
                   return res.status(400).json({ message: err.message });
                 } else {
-                  res.status(200).json({ message: "message liké" });
+                  let incCompteur =
+                    "update messages set messages_likes = messages_likes + ? where messages_id = ?";
+                  connectionDB.query(
+                    incCompteur,
+                    [req.body.like, messages_id],
+                    (err, data) => {
+                      console.log("essai");
+                      console.log(req.body.like);
+                      if (err) {
+                        return res.status(400).json({ message: err.message });
+                      } else {
+                        res
+                          .status(200)
+                          .json({
+                            message:
+                              "message like et compteur dans table message incrementé",
+                            data,
+                          });
+                      }
+                    }
+                  );
                 }
               }
             );
-          }
-          else{
+          } else {
             res.status(200).json({ message: "avis deja donné" });
           }
           break;
@@ -53,92 +72,114 @@ exports.likeInfo = (req, res) => {
                 if (err) {
                   return res.status(400).json({ message: err.message });
                 } else {
-                  return res.status(200).json({ message: "message dislike" });
+                  let incCompteur =
+                    "update messages set messages_dislikes = messages_dislikes + ? where messages_id = ?";
+                  connectionDB.query(
+                    incCompteur,
+                    [Math.abs(req.body.like), messages_id],
+                    (err, data) => {
+                      if (err) {
+                        return res.status(400).json({ message: err.message });
+                      } else {
+                        res
+                          .status(200)
+                          .json({
+                            message:
+                              "message dislike et compteur dans table message incrementé",
+                            data,
+                          });
+                      }
+                    }
+                  );
                 }
               }
             );
-          }
-          else{
+          } else {
             res.status(200).json({ message: "avis deja donné" });
           }
-         
+
           break;
         }
 
         case "0":
           {
-            console.log("case 0");
-            console.log(req.body.like);
+
+            if (result[0].message_liked == 0 && result[0].message_disliked == 0){
+              return res.status(400).json({ message:" ce cas ne doit pas arriver en frontend"})
+            }
+            
             if (result[0].message_liked == 0) {
               let disliked = `update likes set message_disliked = ? where likes_message_id = ? AND likes_message_quadri = ?`;
-              console.log(req.body.like);
-              const noLikeOrDislike = "0";
+              const regulation = -1;
               connectionDB.query(
                 disliked,
-                [noLikeOrDislike, messages_id, users_quadri],
+                [req.body.like, messages_id, users_quadri],
                 (err, data) => {
                   if (err) {
                     return res.status(400).json({ message: err.message });
+                  } else {
+                    let incCompteur =
+                      "update messages set messages_dislikes = messages_dislikes + ? where messages_id = ?";
+                    connectionDB.query(
+                      incCompteur,
+                      [regulation, messages_id],
+                      (err, data) => {
+                        if (err) {
+                          return res.status(400).json({ message: err.message });
+                        } else {
+                          return res
+                            .status(200)
+                            .json({
+                              message:
+                                "neutre et compteur dans table message incrementé de -1",
+                              data,
+                            });
+                        }
+                      }
+                    );
                   }
                 }
               );
             } else if (result[0].message_disliked == 0) {
               let disliked = `update likes set message_liked = ? where likes_message_id = ? AND likes_message_quadri = ?`;
-              console.log(req.body.like);
-              const noLikeOrDislike = "0";
+              
+              const regulation = -1;
               connectionDB.query(
                 disliked,
-                [noLikeOrDislike, messages_id, users_quadri],
+                [req.body.like, messages_id, users_quadri],
                 (err, data) => {
                   if (err) {
                     return res.status(400).json({ message: err.message });
                   }
+                  else {
+                    let incCompteur =
+                      "update messages set messages_likes = messages_likes + ? where messages_id = ?";
+                    connectionDB.query(
+                      incCompteur,
+                      [regulation, messages_id],
+                      (err, data) => {
+                        if (err) {
+                          return res.status(400).json({ message: err.message });
+                        } else {
+                          return res
+                            .status(200)
+                            .json({
+                              message:
+                                "neutre et compteur table message incrementé de -1",
+                              data,
+                            });
+                        }
+                      }
+                    );
+                  }
                 }
               );
+            } else {
+              return res.status(400).json({ message: err });
             }
-            res
-              .status(400)
-              .json({ message: "Vous n'avez pas d'avis sur ce messages" });
           }
           break;
       }
     }
   );
-};
-
-/*(result[0].message_liked == 0 && result[0].message_disliked==0) {
-        console.log (result[0].message_disliked)
-        return res.status(200).json({ message: result });
-      }*/
-
-exports.like = (req, res) => {
-  let liked = "update likes set (message_liked) values (?)";
-  console.log(req.body.like);
-  connectionDB.query(liked, [req.body.like], (err, data) => {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    } else {
-      return res.status(200).json({ message: "message liké" });
-    }
-  });
-
-  switch (req.body.like) {
-    case 1: {
-      console.log("case 1");
-      console.log(req.body.like);
-      break;
-    }
-
-    case -1: {
-      console.log("case -1");
-      console.log(req.body.like);
-      break;
-    }
-
-    case 0: {
-      console.log("case 0");
-      console.log(req.body.like);
-      break;
-    }
-  }
 };
