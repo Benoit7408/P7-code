@@ -45,7 +45,7 @@ exports.updateOneNews = function (req, res) {
         .status(400)
         .json({ message: "il n'y a pas de message correspondant" });
     }
-    
+
     if (!req.file) {
       const news = new News({
         content: req.body.content,
@@ -62,25 +62,14 @@ exports.updateOneNews = function (req, res) {
           return res.status(200).json({ message: data });
         }
       });
-    }else{
-
-      console.log(data[0].messages_imageUrl);
-      if (data[0].messages_imageUrl != "") {
-        const oldImage = data[0].messages_imageUrl.split("/images/news/")[1];
-        console.log(oldImage);
-        fs.unlink(`images/news/${oldImage}`,()=>{
-          if (err) console.log (err);
-          else console.log('image supprimée')
-        })
-      }
-
-      console.log ("essai")
+      
+    } else if (data[0].messages_imageUrl == null) {
       const news = new News({
         content: req.body.content,
+        updateAt: new Date(),
         imageUrl: `${req.protocol}://${req.get("host")}/images/news/${
           req.file.filename
         }`,
-        updateAt: new Date(),
         isActive: true,
         id: req.params.id,
       });
@@ -93,31 +82,69 @@ exports.updateOneNews = function (req, res) {
           return res.status(200).json({ message: data });
         }
       });
-      
+    } else {
+      console.log(data[0].messages_imageUrl);
+      if (data[0].messages_imageUrl) {
+        const oldImage = data[0].messages_imageUrl.split("/images/news/")[1];
+        console.log(oldImage);
+        fs.unlink(`images/news/${oldImage}`, () => {
+          if (err) console.log(err);
+        });
+
+        console.log("ici");
+        const news = new News({
+          content: req.body.content,
+          imageUrl: `${req.protocol}://${req.get("host")}/images/news/${
+            req.file.filename
+          }`,
+          updateAt: new Date(),
+          isActive: true,
+          id: req.params.id,
+        });
+
+        News.updateOneNews(news, (err, data) => {
+          console.log(data);
+          if (err) {
+            return res.status(400).json({ message: err.message });
+          } else {
+            return res.status(200).json({ message: data });
+          }
+        });
+      }
     }
   });
 };
 
 //------------Creer une news --------------------------
 exports.postNews = function (req, res) {
-  const news = new News({
-    quadri: req.auth.userId,
-    content: req.body.content,
-    imageUrl: `${req.protocol}://${req.get("host")}/images/news/${
-      req.file.filename
-    }`,
-    likes: "",
-    dislikes: "",
-  });
-  console.log(req.auth);
-  
-  News.postOneNews(news, (err, data) => {
-    if (err) {
-      return res.status(400).json({ message: err.message });
-    } else {
-      return res.status(200).json({ message: data });
-    }
-  });
+  if (req.file) {
+    const news = new News({
+      quadri: req.auth.userId,
+      content: req.body.content,
+      imageUrl: `${req.protocol}://${req.get("host")}/images/news/${
+        req.file.filename
+      }`,
+    });
+    News.postOneNews(news, (err, data) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      } else {
+        return res.status(200).json({ message: data });
+      }
+    });
+  } else {
+    const news = new News({
+      quadri: req.auth.userId,
+      content: req.body.content,
+    });
+    News.postOneNews(news, (err, data) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      } else {
+        return res.status(200).json({ message: data });
+      }
+    });
+  }
 };
 // -------------------------------Supprimer une news-----------------------------
 exports.deleteOneNews = function (req, res) {

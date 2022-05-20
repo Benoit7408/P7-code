@@ -169,7 +169,7 @@ exports.updateUserPro = function (req, res) {
         console.log(oldImage);
         fs.unlink(`images/avatar/${oldImage}`, () => {
           if (err) console.log(err);
-          else console.log("image avatar supprimée");
+          return res.status(200).json({ message: "image supprimée" }) ;
         });
       }
 
