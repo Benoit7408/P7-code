@@ -6,7 +6,7 @@
     <h1>This is an news page</h1>
     <h2>{{news.id}}</h2>
     <h2>{{news.content}}</h2>
-    <img :src= "news.image">
+    <img :src= "news.imageUrl">
     </div>
   </div>
 </template>

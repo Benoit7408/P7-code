@@ -1,7 +1,7 @@
-let regexLogin = //;
+let regexLogin = /[<>}={_|^*~$]/;
 
 module.exports = (req, res, next) => {
-  if (!regexLogin.test(req.body.quadri)) {
+  if (regexLogin.test(req.body.quadri)) {
     req.invalidLogin = 1;
     console.log(!regexLogin.test(req.body.quadri))
     console.log(req.body.quadri)

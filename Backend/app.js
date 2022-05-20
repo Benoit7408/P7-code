@@ -56,7 +56,8 @@ app.use(express.urlencoded({ extended: true }));
 //-------------Les différentes routes interne et externe( voir les middleware coorespondant ainsi que les models-------------
 
 
-app.use("/images/news",express.static(path.join(__dirname,"images/news")))
+app.use("/images",express.static(path.join(__dirname,"images")))
+
 app.use("/api", allInfoRoutes);
 app.use("/api/auth",apiLimiterCreateCount ,userRoutes);
 app.use("/api/news",commentsRoutes);

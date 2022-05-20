@@ -49,7 +49,11 @@ News.getOneNewsThisUser = function (req, result) {
 
 News.updateOneNews = function (news, result) {
   let updateOneNews = `update messages set
-    messages_content = ?,messages_imageUrl = ?,messages_updateAt = ?,messages_isActive = ? where messages_id = ? `;
+    messages_content = ?,
+    messages_imageUrl = ?,
+    messages_updateAt = ?,
+    messages_isActive = ? 
+    where messages_id = ? `;
 
   connectionDB.query(
     updateOneNews,

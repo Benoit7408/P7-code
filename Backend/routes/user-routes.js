@@ -8,11 +8,13 @@ const userCtrl = require("../controllers/user-ctrl");
 const password = require("../middleware/password");
 const email = require("../middleware/email");
 const input = require ("../middleware/regex-input");
+const multerA = require("../middleware/multer-avatar");
 //const info = require("../middleware/node-mailer");
 
 //route suivi de middleware et de controler
 
-router.post("/signup", email ,password,userCtrl.signup);
-router.post("/login", userCtrl.login);
+router.post("/signup" ,multerA, password,userCtrl.signup);
+router.post("/login",input, userCtrl.login);
+router.put("/user/:quadri",multerA,userCtrl.updateUserPro);
 
 module.exports = router;
