@@ -2,7 +2,35 @@ const mysql = require("mysql");
 const likes = require("../model/likes-model");
 const connectionDB = require("../config/db");
 
+
+
+
+
+
 exports.likeInfo = (req, res) => {
+
+  let initTableLike = ` insert into 
+  likes (
+    likes_message_id,
+    likes_message_quadri,
+    message_liked,
+    message_disliked
+    ) 
+    values 
+    (?,?,?,?) `;
+  
+  connectionDB.query(initTableLike,[req.params.id,req.auth.userId,0,0],(err, result) => {
+  if (err) {
+    console.log(err);
+    result(err, null);
+  } else {
+    console.log(result);
+    console.log(user);
+    result(null, { user });
+  }
+  })
+
+
   const messages_id = req.params.id;
   const users_quadri = req.auth.userId;
   console.log(messages_id, users_quadri);
@@ -16,9 +44,11 @@ exports.likeInfo = (req, res) => {
       if (err) {
         return res.status(400).json({ message: err.message });
       }
-
+      console.log(result);
       switch (req.body.like) {
         case "1": {
+          console.log(" case 1")
+          console.log(result)
           if (result[0].message_liked == 0 && result[0].message_disliked == 0) {
             console.log("case 1");
             console.log(req.body.like);

@@ -64,14 +64,15 @@ Comments.postOneComments = function (comments, result) {
   let postComments = `insert into
   comments (
     comments_quadri,
-    comments_content
+    comments_content,
+    comments_id
   )
   values
-  (?, ?)
+  (?, ?,?)
 `;
   connectionDB.query(
     postComments,
-    [comments.comments_quadri, comments.comments_content],
+    [comments.comments_quadri, comments.comments_content,comments.comments_message_id],
     (err, res) => {
       if (err) {
         result(err, null);

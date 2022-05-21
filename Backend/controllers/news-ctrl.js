@@ -62,7 +62,6 @@ exports.updateOneNews = function (req, res) {
           return res.status(200).json({ message: data });
         }
       });
-      
     } else if (data[0].messages_imageUrl == null) {
       const news = new News({
         content: req.body.content,
@@ -124,6 +123,9 @@ exports.postNews = function (req, res) {
       imageUrl: `${req.protocol}://${req.get("host")}/images/news/${
         req.file.filename
       }`,
+      likes : 0,
+      dislikes : 0,
+      updateAt: new Date
     });
     News.postOneNews(news, (err, data) => {
       if (err) {
@@ -136,15 +138,25 @@ exports.postNews = function (req, res) {
     const news = new News({
       quadri: req.auth.userId,
       content: req.body.content,
+      likes : 0,
+      dislikes : 0,
+      updateAt: new Date
     });
     News.postOneNews(news, (err, data) => {
       if (err) {
         return res.status(400).json({ message: err.message });
       } else {
-        return res.status(200).json({ message: data });
+       return res.status(200).json({ message: data });
       }
+     
+
     });
+    
   }
+  
+
+
+
 };
 // -------------------------------Supprimer une news-----------------------------
 exports.deleteOneNews = function (req, res) {

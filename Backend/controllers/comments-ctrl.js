@@ -65,10 +65,16 @@ exports.postOneComments = function (req, res) {
   const comments = new Comments({
     quadri: req.auth.userId,
     content: req.body.content,
-   
+    message_id:req.params.id
   });
-  console.log(req.auth);
+  console.log("req.params.quadri");
+  console.log(req.params.quadri);
+  console.log(req.params.id)
+
+  console.log("auth");
+  console.log(req.auth.userId);
   
+  if (req.auth.userId === req.params.quadri) {
   Comments.postOneComments(comments, (err, data) => {
     if (err) {
       return res.status(400).json({ message: err.message });
@@ -76,6 +82,9 @@ exports.postOneComments = function (req, res) {
       return res.status(200).json({ message: data });
     }
   });
+} else{
+  return res.status(400).json({ message: "pas autoriser" });
+}
 };
 
 
