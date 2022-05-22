@@ -14,6 +14,7 @@ exports.getAllInfo = function (req, res) {
       result.forEach((element) => {
         resultData.push({
           id: element.messages_id,
+          created: element.messages_createdAt,
           quadri: element.messages_quadri,
           content: element.messages_content,
           image: element.messages_imageUrl,
