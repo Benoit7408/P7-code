@@ -10,7 +10,7 @@ const Likes = function (like) {
 };
 
 Likes.getAllLikeThisMessage = function (result){
-  let getAllLikeThisMessage = "select likes_message_id, likes_message_quadri,message_liked,message_disliked,messages_id from likes left join messages on likes_message_id=messages_id order by messages.messages_id desc limit 10  "
+  let getAllLikeThisMessage = "select likes_message_id,message_liked,message_disliked,messages_id from likes left join messages on likes_message_id=messages_id order by messages.messages_id desc limit 10  "
 
   connectionDB.query(getAllLikeThisMessage,(err, res) => {
     if (err) {

@@ -123,9 +123,9 @@ exports.postNews = function (req, res) {
       imageUrl: `${req.protocol}://${req.get("host")}/images/news/${
         req.file.filename
       }`,
-      likes : 0,
-      dislikes : 0,
-      updateAt: new Date
+      likes: 0,
+      dislikes: 0,
+      updateAt: new Date(),
     });
     News.postOneNews(news, (err, data) => {
       if (err) {
@@ -138,25 +138,42 @@ exports.postNews = function (req, res) {
     const news = new News({
       quadri: req.auth.userId,
       content: req.body.content,
-      likes : 0,
-      dislikes : 0,
-      updateAt: new Date
+      likes: 0,
+      dislikes: 0,
+      updateAt: new Date(),
     });
     News.postOneNews(news, (err, data) => {
       if (err) {
         return res.status(400).json({ message: err.message });
       } else {
-       return res.status(200).json({ message: data });
+        let initTableLike = `insert into 
+        likes (
+          likes_message_id,
+          message_liked,
+          message_disliked
+          ) 
+          values 
+          (?,?,?)`;
+
+          console.log(data)
+        connectionDB.query(initTableLike, [62, 0, 0], (err, res) => {
+          if (err) {
+            console.log(err);
+            
+          } else {
+            console.log(res)
+          }
+        })
+ 
+
+        return res.status(200).json({ message: data });
       }
-     
-
     });
-    
   }
+
+
+
   
-
-
-
 };
 // -------------------------------Supprimer une news-----------------------------
 exports.deleteOneNews = function (req, res) {
@@ -172,3 +189,21 @@ exports.deleteOneNews = function (req, res) {
     }
   });
 };
+/*let initTableLike = `insert into 
+        likes (
+          likes_message_id,
+          message_liked,
+          message_disliked
+          ) 
+          values 
+          (?,?,?)`;
+
+          console.log(data)
+        connectionDB.query(initTableLike, [68, 0, 0], (err, res) => {
+          if (err) {
+            console.log(err);
+            
+          } else {
+            console.log(res)
+          }
+        });*/ 
