@@ -1,10 +1,11 @@
 <template>
   <div>
-    <form class="form-signin" >
+    <form v-on:submit.prevent="submitForm" class="form-signin" >
      
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
       <label for="inputName" class="sr-only">Nom</label>
       <input
+      v-model = "form.inputName"
         type="text"
         id="name"
         class="form-control"
@@ -12,8 +13,9 @@
         required
         autofocus
       />
+      
       <label for="inputLastName" class="sr-only">Prenom</label>
-      <input
+      <input v-model = "form.inputLastName"
         type="text"
         id="lastName"
         class="form-control"
@@ -22,7 +24,7 @@
         autofocus
       />
       <label for="inputEmail" class="sr-only">Email address</label>
-      <input
+      <input v-model = "form.inputEmail"
         type="email"
         id="inputEmail"
         class="form-control"
@@ -31,7 +33,7 @@
         autofocus
       />
       <label for="inputPassword" class="sr-only">Password</label>
-      <input
+      <input v-model = "form.inputPassword"
         type="password"
         id="inputPassword"
         class="form-control"
@@ -46,11 +48,7 @@
         placeholder="Password"
         required
       />
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me" /> Remember me
-        </label>
-      </div>
+     
       <button class="btn btn-lg btn-primary btn-block" type="submit">
         Sign in
       </button>
@@ -61,8 +59,35 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
 export default {
     name: 'signup-form',
+data(){
+  return{
+    form:{
+      inputName:"ben",
+      inputLastName:"ben",
+      inputEmail:"essai@essai.fr",
+      inputPassword: "Essai1"
+
+    }
+  }
+},
+methods:{
+  submitForm(){
+    axios.post("http://localhost:3000/api/auth/signup",this.form)
+    
+    .then((res)=>{
+      console.log(res)
+    })
+  }
+}
+
 }
 
 </script>

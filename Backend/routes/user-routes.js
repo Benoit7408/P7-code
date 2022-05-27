@@ -13,7 +13,7 @@ const multerA = require("../middleware/multer-avatar");
 
 //route suivi de middleware et de controler
 
-router.post("/signup" ,multerA, password,userCtrl.signup);
+router.post("/signup" ,multerA,userCtrl.signup);
 router.post("/login",input, userCtrl.login);
 router.put("/user/:quadri",multerA,userCtrl.updateUserPro);
 

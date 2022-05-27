@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-
+const cors = require("cors");
 
 // Securité et log
 const rateLimit = require("express-rate-limit");
@@ -25,6 +25,8 @@ const apiLimiterCreateCount = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -40,11 +42,6 @@ app.use((req, res, next) => {
 
 
 //-------------Securise les en tete http-------------
-app.use(
-  helmet({
-    crossOriginResourcePolicy: false,
-  })
-);
 
 
 app.use(express.json());
@@ -52,14 +49,17 @@ app.use(express.urlencoded({ extended: true }));
 
 //app.use(xss());
 
+app.use("/images",express.static(path.join(__dirname,"images")))
 
+app.use(
+  helmet()
+);
 //-------------Les différentes routes interne et externe( voir les middleware coorespondant ainsi que les models-------------
 
 
-app.use("/images",express.static(path.join(__dirname,"images")))
 
 app.use("/api", allInfoRoutes);
-app.use("/api/auth",apiLimiterCreateCount ,userRoutes);
+app.use("/api/auth" ,userRoutes);
 app.use("/api/news",commentsRoutes);
 app.use("/api/news",likesRoutes);
 app.use("/api/news",newsRoutes);

@@ -57,7 +57,7 @@ export default {
   name : 'news-page',
   data(){
     return{
-      news : " ",
+      news : "",
     }
   },
   mounted(){
@@ -65,13 +65,12 @@ export default {
   .get("http://localhost:3000/api/news")
   .then((response) => {
     this.news = response.data;
-    console.log(response.data.resultData[0].id);
-    
+    console.log(response.data.resultData[0].id); 
   })
- 
   }
-  
 }
+
+
 
 </script>
 
@@ -79,7 +78,8 @@ export default {
 <style scoped>
 
 .news{
-border-style : solid;
+  border: 10px solid #d1515a;
+
 margin-bottom : 5%;
 }
 .card-body{
