@@ -5,7 +5,7 @@ import loginView from '../views/LoginView.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/auth/signup',
     name: 'signup-form',
     component: signupView
   },

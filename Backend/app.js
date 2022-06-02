@@ -25,6 +25,8 @@ const apiLimiterCreateCount = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use((req, res, next) => {
@@ -44,8 +46,6 @@ app.use((req, res, next) => {
 //-------------Securise les en tete http-------------
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 //app.use(xss());
 

@@ -1,95 +1,82 @@
 <template>
   <div>
-    <form v-on:submit.prevent="submitForm" class="form-signin" >
-     
+    <form v-on:submit.prevent="submitForm" method="post" class="form-signin">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-      <label for="inputName" class="sr-only">Nom</label>
+      <label for="first_name" class="sr-only">Nom</label>
       <input
-      v-model = "form.inputName"
+        v-model="first_name"
         type="text"
-        id="name"
+        id="first_name"
         class="form-control"
         placeholder="Nom"
         required
         autofocus
       />
-      
-      <label for="inputLastName" class="sr-only">Prenom</label>
-      <input v-model = "form.inputLastName"
+
+      <label for="last_name" class="sr-only">Prenom</label>
+      <input
+        v-model="last_name"
         type="text"
-        id="lastName"
+        id="last_name"
         class="form-control"
         placeholder="Prenom"
         required
         autofocus
       />
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input v-model = "form.inputEmail"
+      <label for="email" class="sr-only">Email address</label>
+      <input
+        v-model="email"
         type="email"
-        id="inputEmail"
+        id="email"
         class="form-control"
         placeholder="Email address"
         required
         autofocus
       />
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input v-model = "form.inputPassword"
-        type="password"
-        id="inputPassword"
-        class="form-control"
-        placeholder="Password"
-        required
-      />
-      <label for="inputPassword" class="sr-only">Check Password</label>
+      <label for="password" class="sr-only">Password</label>
       <input
+        v-model="password"
         type="password"
-        id="inputPassword"
+        id="password"
         class="form-control"
         placeholder="Password"
         required
       />
-     
-      <button class="btn btn-lg btn-primary btn-block" type="submit">
+
+      <router-link
+        class="btn btn-lg btn-primary btn-block"
+        to="/news"
+        type="submit"
+        @click="submitForm"
+      >
         Sign in
-      </button>
-      
+      </router-link>
     </form>
   </div>
-  
 </template>
 
 <script>
-
-import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:3000';
-axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+import http from "../http";
 
 export default {
-    name: 'signup-form',
-data(){
-  return{
-    form:{
-      inputName:"ben",
-      inputLastName:"ben",
-      inputEmail:"essai@essai.fr",
-      inputPassword: "Essai1"
-
-    }
-  }
-},
-methods:{
-  submitForm(){
-    axios.post("http://localhost:3000/api/auth/signup",this.form)
-    
-    .then((res)=>{
-      console.log(res)
-    })
-  }
-}
-
-}
-
+  name: "signup-form",
+  data() {
+    return {
+        first_name: null,
+        last_name: null,
+        email: null,
+        password: null,
+      
+    };
+  },
+  methods: {
+    submitForm() {
+      http.post("/auth/signup", this.first_name, this.last_name, this.email,this.password).then((response) => {
+      console.log(response)
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -133,12 +120,10 @@ body {
   z-index: 2;
 }
 .form-signin input[type="email"] {
-  
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
 .form-signin input[type="password"] {
- 
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -147,5 +132,4 @@ body {
   width: 100%;
   display: inline-block;
 }
-
 </style>

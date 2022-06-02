@@ -50,7 +50,7 @@
 
 
 <script>
-import axios from "axios"
+import http from  "../http"
 
 
 export default {
@@ -60,9 +60,13 @@ export default {
       news : "",
     }
   },
+
+
+
+  
   mounted(){
-  axios
-  .get("http://localhost:3000/api/news")
+  
+  http.get("/news")
   .then((response) => {
     this.news = response.data;
     console.log(response.data.resultData[0].id); 
